@@ -13,6 +13,27 @@ services:
       - onlyoffice
     volumes:
       - app_data:/var/www/html
+    depends_on: 
+      - db
+    environment: 
+      - MYSQL_HOST=nextcloud-db
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=dbroot
+      - MYSQL_DATABASE=nextcloud
+  db:
+    container_name: nextcloud-db
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    networks:
+      - onlyoffice
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=dbroot
+      - MYSQL_PASSWORD=dbroot
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
   onlyoffice-document-server:
     container_name: onlyoffice-document-server
     image: onlyoffice/documentserver:latest
